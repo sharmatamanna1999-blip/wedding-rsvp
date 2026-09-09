@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tamanna & Vicky — Wedding RSVP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    :root {
+      --bg-cream: #FFFBF7;
+      --card-bg: #FFFFFF;
+      --crimson: #9E2A2B;
+      --crimson-dark: #7A1C1D;
+      --gold: #D4AF37;
+      --gold-light: #FFF2D1;
+      --text-dark: #23201F;
+      --text-muted: #6E6865;
+      --border-subtle: #F0E8E2;
+      --radius: 28px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: linear-gradient(180deg, #FBF4ED 0%, #FFFDF9 100%);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text-dark);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: 0 20px 50px rgba(158, 42, 43, 0.08), 0 4px 12px rgba(0, 0, 0, 0.02);
+      border: 1.5px solid var(--border-subtle);
+      padding: 32px 24px;
+      position: relative;
+      overflow: hidden;
+      min-height: 560px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      text-align: center;
+      align-items: center;
+      animation: smoothFade 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .screen.active {
+      display: flex;
+      width: 100%;
+    }
+
+    @keyframes smoothFade {
+      from { opacity: 0; transform: translateY(12px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* 3D Character Illustration Frame */
+    .avatar-frame {
+      width: 100%;
+      max-width: 280px;
+      height: 190px;
+      margin: 0 auto 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .avatar-frame svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 12px 24px rgba(158, 42, 43, 0.12));
+    }
+
+    /* Floating Heart Accent */
+    .sparkle-heart {
+      position: absolute;
+      top: 0px;
+      right: 48px;
+      font-size: 22px;
+      animation: float 2.4s ease-in-out infinite alternate;
+    }
+
+    @keyframes float {
+      from { transform: translateY(0px) rotate(-8deg); }
+      to { transform: translateY(-8px) rotate(8deg); }
+    }
+
+    /* Badges & Typography */
+    .badge-capsule {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--gold-light);
+      color: #8C6200;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 50px;
+      margin-bottom: 12px;
+    }
+
+    h1.title-names {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.15;
+      color: var(--crimson);
+      margin-bottom: 6px;
+    }
+
+    .date-tag {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 14px;
+      letter-spacing: 1px;
+    }
+
+    p.subtext {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 26px;
+      font-weight: 500;
+    }
+
+    /* Input & Form Styling */
+    form {
+      width: 100%;
+    }
+
+    .form-group {
+      text-align: left;
+      margin-bottom: 18px;
+      width: 100%;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-dark);
+      margin-bottom: 6px;
+    }
+
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 13px 16px;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 14px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-dark);
+      background: #FAFAF8;
+      transition: all 0.2s ease;
+    }
+
+    input[type="text"]:focus, textarea:focus {
+      outline: none;
+      border-color: var(--crimson);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 4px rgba(158, 42, 43, 0.08);
+    }
+
+    /* Stepper Counter */
+    .stepper {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1.5px solid var(--border-subtle);
+      border-radius: 14px;
+      background: #FAFAF8;
+      padding: 4px;
+      width: 140px;
+    }
+
+    .stepper button {
+      width: 38px;
+      height: 38px;
+      border: none;
+      background: #FFFFFF;
+      border-radius: 10px;
+      font-size: 20px;
+      font-weight: bold;
+      cursor: pointer;
+      color: var(--crimson);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .stepper span {
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: 15px 22px;
+      border-radius: 50px;
+      border: none;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary {
+      background: var(--crimson);
+      color: #FFFFFF;
+      box-shadow: 0 8px 20px rgba(158, 42, 43, 0.25);
+    }
+
+    .btn-primary:hover {
+      background: var(--crimson-dark);
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1.5px solid var(--border-subtle);
+      color: var(--text-muted);
+      margin-top: 12px;
+    }
+
+    .btn-outline:hover {
+      border-color: var(--text-muted);
+      color: var(--text-dark);
+    }
+
+    .loader {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--crimson);
+      margin-top: 10px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+
+    <!-- Screen 1: Welcome -->
+    <div id="screen-1" class="screen active">
+      <div class="avatar-frame">
+        <div class="sparkle-heart">💖</div>
+
+        <!-- 3D Pixar Style Illustrated Avatars (Vector SVG with 3D Depth & Lighting) -->
+        <svg viewBox="0 0 320 220" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Skin Gradients -->
+            <radialGradient id="skinGroom" cx="50%" cy="40%" r="55%">
+              <stop offset="0%" stop-color="#FFDFC4"/>
+              <stop offset="75%" stop-color="#F5C3A3"/>
+              <stop offset="100%" stop-color="#E2A782"/>
+            </radialGradient>
+            <radialGradient id="skinBride" cx="50%" cy="40%" r="55%">
+              <stop offset="0%" stop-color="#FFF0E3"/>
+              <stop offset="75%" stop-color="#FCD3BA"/>
+              <stop offset="100%" stop-color="#EAAFA2"/>
+            </radialGradient>
+            <!-- Hair Gradients -->
+            <linearGradient id="hairGroom" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3A3845"/>
+              <stop offset="50%" stop-color="#201E25"/>
+              <stop offset="100%" stop-color="#121114"/>
+            </linearGradient>
+            <linearGradient id="hairBride" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="#342B30"/>
+              <stop offset="60%" stop-color="#1E171B"/>
+              <stop offset="100%" stop-color="#0F0C0E"/>
+            </linearGradient>
+            <!-- Outfits -->
+            <linearGradient id="sherwani" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#FFFFFF"/>
+              <stop offset="50%" stop-color="#F5EFE6"/>
+              <stop offset="100%" stop-color="#DFD5C6"/>
+            </linearGradient>
+            <linearGradient id="lehenga" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#C92A42"/>
+              <stop offset="70%" stop-color="#9E1B32"/>
+              <stop offset="100%" stop-color="#670C1E"/>
+            </linearGradient>
+            <radialGradient id="goldGlow" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#FFE699"/>
+              <stop offset="70%" stop-color="#D4AF37"/>
+              <stop offset="100%" stop-color="#997A15"/>
+            </radialGradient>
+            <!-- Rose Garland -->
+            <radialGradient id="rosePink" cx="40%" cy="40%" r="60%">
+              <stop offset="0%" stop-color="#FFA8BA"/>
+              <stop offset="80%" stop-color="#E63956"/>
+              <stop offset="100%" stop-color="#961B30"/>
+            </radialGradient>
+          </defs>
+
+          <!-- Background Aura Glow -->
+          <circle cx="160" cy="115" r="95" fill="#FFEFEA" opacity="0.75" />
+
+          <!-- ================= GROOM (VICKY) ================= -->
+          <g id="groom" transform="translate(42, 18)">
+            <!-- Sherwani Body with 3D Volume -->
+            <path d="M 20 185 L 110 185 L 105 130 Q 65 125 25 130 Z" fill="url(#sherwani)" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.1))"/>
+            <!-- Mandarin Collar & Gold Embroidery -->
+            <path d="M 46 128 L 84 128 L 80 144 L 50 144 Z" fill="#E8DEC8" />
+            <line x1="65" y1="130" x2="65" y2="185" stroke="url(#goldGlow)" stroke-width="3" stroke-linecap="round" />
+            <circle cx="65" cy="150" r="2" fill="#5C4504"/>
+            <circle cx="65" cy="164" r="2" fill="#5C4504"/>
+            <circle cx="65" cy="178" r="2" fill="#5C4504"/>
+
+            <!-- Head & 3D Shaded Face -->
+            <ellipse cx="65" cy="82" rx="36" ry="40" fill="url(#skinGroom)" />
+            <!-- Soft Rosy Cheeks -->
+            <circle cx="45" cy="94" r="7" fill="#FFA585" opacity="0.35" />
+            <circle cx="85" cy="94" r="7" fill="#FFA585" opacity="0.35" />
+
+            <!-- Pixar Big Sparkling Eyes -->
+            <!-- Left Eye -->
+            <ellipse cx="50" cy="80" rx="6.5" ry="8" fill="#2B201A"/>
+            <circle cx="48" cy="78" r="2.5" fill="#FFFFFF"/>
+            <circle cx="52" cy="83" r="1.2" fill="#FFFFFF" opacity="0.8"/>
+            <!-- Right Eye -->
+            <ellipse cx="80" cy="80" rx="6.5" ry="8" fill="#2B201A"/>
+            <circle cx="78" cy="78" r="2.5" fill="#FFFFFF"/>
+            <circle cx="82" cy="83" r="1.2" fill="#FFFFFF" opacity="0.8"/>
+
+            <!-- Eyebrows & Smile -->
+            <path d="M 43 68 Q 50 64 57 67" stroke="#221C18" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+            <path d="M 73 67 Q 80 64 87 68" stroke="#221C18" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+            <path d="M 58 98 Q 65 106 72 98" stroke="#A84332" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+
+            <!-- Dapper Glasses with Rim Lighting -->
+            <rect x="41" y="71" width="18" height="18" rx="6" fill="none" stroke="#2B2625" stroke-width="2.5"/>
+            <rect x="71" y="71" width="18" height="18" rx="6" fill="none" stroke="#2B2625" stroke-width="2.5"/>
+            <line x1="59" y1="78" x2="71" y2="78" stroke="#2B2625" stroke-width="2.5"/>
+
+            <!-- Styled Pompadour Hair -->
+            <path d="M 32 70 Q 30 40 50 25 Q 70 12 92 28 Q 102 44 98 70 Q 86 44 65 42 Q 44 42 32 70" fill="url(#hairGroom)"/>
+            <!-- Hair Highlight -->
+            <path d="M 52 28 Q 70 20 84 32" stroke="#5E5868" stroke-width="2" stroke-linecap="round" fill="none"/>
+          </g>
+
+          <!-- ================= BRIDE (TAMANNA) ================= -->
+          <g id="bride" transform="translate(148, 16)">
+            <!-- Royal Red Bridal Chunni/Veil -->
+            <path d="M 24 60 Q 65 24 106 60 Q 116 130 102 188 Q 65 180 28 188 Q 14 130 24 60" fill="url(#lehenga)" filter="drop-shadow(0 6px 12px rgba(158, 42, 43, 0.3))"/>
+            <!-- Scalloped Gold Chunni Border -->
+            <path d="M 28 62 Q 65 30 102 62" stroke="url(#goldGlow)" stroke-width="3" fill="none" stroke-dasharray="4,2"/>
+
+            <!-- Lehenga Sweetheart Blouse -->
+            <path d="M 35 145 Q 65 130 95 145 L 102 188 L 28 188 Z" fill="url(#lehenga)"/>
+            <path d="M 44 140 Q 65 155 86 140" stroke="url(#goldGlow)" stroke-width="3" fill="none"/>
+
+            <!-- Head & 3D Shaded Face -->
+            <ellipse cx="65" cy="85" rx="35" ry="38" fill="url(#skinBride)" />
+            <!-- Soft Peachy Blush -->
+            <circle cx="44" cy="98" r="8" fill="#FF8FA3" opacity="0.4" />
+            <circle cx="86" cy="98" r="8" fill="#FF8FA3" opacity="0.4" />
+
+            <!-- Flowing Dark Hair with Side Parting -->
+            <path d="M 32 75 Q 36 45 65 40 Q 94 45 98 75 Q 85 54 65 54 Q 45 54 32 75" fill="url(#hairBride)"/>
+            <!-- Jasmine/Gajra Hair Accent -->
+            <circle cx="34" cy="62" r="5" fill="#FFFFFF"/>
+            <circle cx="30" cy="70" r="4.5" fill="#FFFFFF"/>
+            <circle cx="32" cy="78" r="4" fill="#FFFFFF"/>
+
+            <!-- Expressive Disney Eyes with Eyelashes -->
+            <!-- Left Eye -->
+            <ellipse cx="49" cy="83" rx="6.5" ry="8" fill="#201511"/>
+            <circle cx="47" cy="81" r="2.6" fill="#FFFFFF"/>
+            <circle cx="51" cy="86" r="1.2" fill="#FFFFFF" opacity="0.8"/>
+            <path d="M 41 78 Q 48 72 56 77" stroke="#120A07" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <line x1="56" y1="77" x2="59" y2="74" stroke="#120A07" stroke-width="2" stroke-linecap="round"/>
+            <!-- Right Eye -->
+            <ellipse cx="81" cy="83" rx="6.5" ry="8" fill="#201511"/>
+            <circle cx="79" cy="81" r="2.6" fill="#FFFFFF"/>
+            <circle cx="83" cy="86" r="1.2" fill="#FFFFFF" opacity="0.8"/>
+            <path d="M 74 77 Q 82 72 89 78" stroke="#120A07" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+            <line x1="89" y1="78" x2="92" y2="75" stroke="#120A07" stroke-width="2" stroke-linecap="round"/>
+
+            <!-- Eyebrows & Sweet Smile -->
+            <path d="M 43 72 Q 50 68 56 71" stroke="#2B1A13" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <path d="M 74 71 Q 80 68 87 72" stroke="#2B1A13" stroke-width="2" stroke-linecap="round" fill="none"/>
+            <path d="M 58 100 Q 65 108 72 100" stroke="#C73E4D" stroke-width="2.6" stroke-linecap="round" fill="none"/>
+
+            <!-- Bridal Jewelry: Maang Tikka, Bindi, Nath -->
+            <line x1="65" y1="44" x2="65" y2="60" stroke="url(#goldGlow)" stroke-width="2"/>
+            <circle cx="65" cy="62" r="3.5" fill="url(#goldGlow)"/>
+            <circle cx="65" cy="62" r="1.8" fill="#E63956"/>
+            <!-- Red Bindi -->
+            <circle cx="65" cy="72" r="1.8" fill="#9E1B32"/>
+            <!-- Cute Nose Ring (Nath) -->
+            <circle cx="56" cy="94" r="3.2" fill="none" stroke="url(#goldGlow)" stroke-width="1.4"/>
+            <path d="M 54 94 Q 45 92 36 84" fill="none" stroke="url(#goldGlow)" stroke-width="0.8" opacity="0.7"/>
+            <!-- Jhumka Earring -->
+            <circle cx="33" cy="90" r="2.5" fill="url(#goldGlow)"/>
+            <path d="M 30 94 L 36 94 L 33 98 Z" fill="url(#goldGlow)"/>
+          </g>
+
+          <!-- ================= VARMALA (ROSE GARLAND) ================= -->
+          <g id="varmala" transform="translate(0, 10)">
+            <circle cx="106" cy="150" r="7" fill="url(#rosePink)"/>
+            <circle cx="118" cy="158" r="6" fill="#FFF2D1"/>
+            <circle cx="132" cy="165" r="7" fill="url(#rosePink)"/>
+            <circle cx="148" cy="170" r="8" fill="url(#rosePink)"/>
+            <circle cx="164" cy="170" r="8" fill="#FFF2D1"/>
+            <circle cx="180" cy="165" r="7" fill="url(#rosePink)"/>
+            <circle cx="194" cy="158" r="6" fill="#FFF2D1"/>
+            <circle cx="206" cy="150" r="7" fill="url(#rosePink)"/>
+          </g>
+        </svg>
+
+        <!-- NOTE: If you generate an image on Midjourney or Bing AI, you can replace the SVG above with:
+        <img src="couple.png" alt="Tamanna & Vicky" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);" />
+        -->
+      </div>
+
+      <div class="badge-capsule">💍 WE'RE GETTING MARRIED!</div>
+      <h1 class="title-names">Tamanna & Vicky</h1>
+      <div class="date-tag">21 • 11 • 2026</div>
+      <p class="subtext">Get ready for full-power bhangra, endless food, and memories! Will we see you at our wedding?</p>
+      
+      <button class="btn btn-primary" onclick="goToScreen(2)">LET'S RSVP! 💌</button>
+    </div>
+
+    <!-- Screen 2: Decision -->
+    <div id="screen-2" class="screen">
+      <div style="font-size: 46px; margin-bottom: 12px;">💃🕺</div>
+      <h1 class="title-names" style="font-size: 26px;">Are you joining the Wedding?</h1>
+      <p class="subtext">21st November 2026 wouldn't be the same without you! Save us the guesswork and let us know.</p>
+      
+      <button class="btn btn-primary" onclick="goToScreen(3)">YES, I'LL BE THERE! 🎉</button>
+      <button class="btn btn-outline" onclick="goToDeclineScreen()">Sadly, I can't make it 🥺</button>
+    </div>
+
+    <!-- Screen 3: Details (Wedding Only) -->
+    <div id="screen-3" class="screen">
+      <h1 class="title-names" style="font-size: 24px; margin-bottom: 6px;">Yay! Guest Details ✨</h1>
+      <p class="subtext" style="margin-bottom: 20px;">Help us save you the best spots!</p>
+      
+      <form id="rsvpForm" onsubmit="submitForm(event, true)">
+        <div class="form-group">
+          <label>Your Name *</label>
+          <input type="text" id="guestName" required placeholder="e.g. Ananya / Rahul" />
+        </div>
+
+        <div class="form-group">
+          <label>Total people attending (including you)</label>
+          <div class="stepper">
+            <button type="button" onclick="adjustCount(-1)">−</button>
+            <span id="guestCountDisplay">1</span>
+            <button type="button" onclick="adjustCount(1)">+</button>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Names of people coming with you</label>
+          <input type="text" id="accompanyingNames" placeholder="Family / Plus one names" />
+        </div>
+
+        <div class="form-group">
+          <label>A message or song request for the couple! 🎶</label>
+          <textarea id="guestNotes" rows="2" placeholder="Drop your blessings or dance floor demands..."></textarea>
+        </div>
+
+        <button type="submit" id="submitBtnAttending" class="btn btn-primary">CONFIRM WEDDING RSVP ❤️</button>
+        <p id="loaderAttending" class="loader">Locking in your spot... ⏳</p>
+      </form>
+    </div>
+
+    <!-- Screen Decline: Warm Wishes Form -->
+    <div id="screen-decline" class="screen">
+      <div style="font-size: 46px; margin-bottom: 10px;">🥺❤️</div>
+      <h1 class="title-names" style="font-size: 24px; margin-bottom: 6px;">We'll Miss You!</h1>
+      <p class="subtext">You'll be thoroughly missed on the dance floor! Please drop your name so we can receive your warm wishes.</p>
+      
+      <form id="declineForm" onsubmit="submitForm(event, false)">
+        <div class="form-group">
+          <label>Your Name *</label>
+          <input type="text" id="declineGuestName" required placeholder="Enter full name" />
+        </div>
+
+        <div class="form-group">
+          <label>A warm message for the couple</label>
+          <textarea id="declineNotes" rows="3" placeholder="Leave your blessings for Tamanna & Vicky..."></textarea>
+        </div>
+
+        <button type="submit" id="submitBtnDecline" class="btn btn-primary">SEND BLESSINGS ✨</button>
+        <p id="loaderDecline" class="loader">Sending your love... ⏳</p>
+      </form>
+    </div>
+
+    <!-- Screen 4: Confirmation -->
+    <div id="screen-4" class="screen">
+      <div id="confirmationContent"></div>
+    </div>
+
+  </div>
+
+  <script>
+    // ⬇️ Paste your deployed Google Apps Script Web App URL below ⬇️
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw719VOujy51St2c1pW8JF4G903_QHW1FuMU4pIpyWEq5D_W4rYixZjs4ESgDWsxQZldw/exec";
+
+    let guestCount = 1;
+
+    function goToScreen(screenNumber) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(`screen-${screenNumber}`).classList.add('active');
+    }
+
+    function goToDeclineScreen() {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-decline').classList.add('active');
+    }
+
+    function adjustCount(change) {
+      guestCount = Math.max(1, Math.min(10, guestCount + change));
+      document.getElementById('guestCountDisplay').innerText = guestCount;
+    }
+
+    async function submitForm(event, isAttending) {
+      event.preventDefault();
+
+      let payload = {};
+      let btn, loader;
+
+      if (isAttending) {
+        btn = document.getElementById('submitBtnAttending');
+        loader = document.getElementById('loaderAttending');
+        
+        payload = {
+          name: document.getElementById('guestName').value,
+          attending: 'Yes',
+          guests: guestCount,
+          events: 'Wedding',
+          accompanying: document.getElementById('accompanyingNames').value,
+          message: document.getElementById('guestNotes').value
+        };
+      } else {
+        btn = document.getElementById('submitBtnDecline');
+        loader = document.getElementById('loaderDecline');
+
+        payload = {
+          name: document.getElementById('declineGuestName').value,
+          attending: 'No',
+          guests: 0,
+          events: 'None',
+          accompanying: '',
+          message: document.getElementById('declineNotes').value
+        };
+      }
+
+      btn.disabled = true;
+      loader.style.display = 'block';
+
+      try {
+        if (SCRIPT_URL && SCRIPT_URL !== "YOUR_APPS_SCRIPT_WEB_APP_URL") {
+          await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+          });
+        }
+      } catch (err) {
+        console.error("Submission error:", err);
+      } finally {
+        showConfirmation(isAttending);
+      }
+    }
+
+    function triggerConfetti() {
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 85,
+          spread: 70,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    function showConfirmation(isAttending) {
+      const content = document.getElementById('confirmationContent');
+      if (isAttending) {
+        triggerConfetti();
+        content.innerHTML = `
+          <div style="font-size: 54px; margin-bottom: 12px;">🎉🥂🪩</div>
+          <h1 class="title-names" style="font-size: 26px;">WOOHOO! YOU'RE IN!</h1>
+          <p class="subtext">
+            Pack your dancing shoes and get ready to celebrate!<br>
+            We can’t wait to party with you on <b>21 November 2026</b>. ❤️
+          </p>
+          <div style="background: var(--gold-light); padding: 10px 18px; border-radius: 12px; font-weight: 700; color: #8C6200; display: inline-block; margin-bottom: 24px; font-size: 13px;">
+            📍 Venue & timings will be shared soon!
+          </div>
+          <p style="font-family: 'Playfair Display', serif; font-size: 20px; color: var(--crimson); font-weight: 700;">
+            With lots of love,<br>Tamanna & Vicky 💕
+          </p>
+        `;
+      } else {
+        content.innerHTML = `
+          <div style="font-size: 50px; margin-bottom: 12px;">💌✨</div>
+          <h1 class="title-names" style="font-size: 24px;">Thank You for Letting Us Know!</h1>
+          <p class="subtext">
+            We will definitely miss having you with us on our big day. Sending you endless love and warm hugs! ❤️
+          </p>
+          <p style="font-family: 'Playfair Display', serif; font-size: 20px; color: var(--crimson); font-weight: 700; margin-top: 12px;">
+            Tamanna & Vicky 💕
+          </p>
+          <p style="font-size: 13px; color: var(--text-muted); margin-top: 6px;">21 November 2026</p>
+        `;
+      }
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-4').classList.add('active');
+    }
+  </script>
+</body>
+</html>
